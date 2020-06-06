@@ -1,7 +1,6 @@
 import torch
 import numpy as np
-from ..utils import clones
-from ..encoder.blocks import ResidualConnection
+from ..utils import clones, ResidualConnection
 
 
 class DecoderLayer(torch.nn.Module):

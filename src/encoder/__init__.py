@@ -1,6 +1,5 @@
 import torch
-from .blocks import LayerNorm
-from ..utils import clones
+from ..utils import clones, LayerNorm
 
 
 class Encoder(torch.nn.Module):
