@@ -1,4 +1,5 @@
 import torch
+from ..utils import clones
 
 
 class LayerNorm(torch.nn.Module):
@@ -27,3 +28,17 @@ class ResidualConnection(torch.nn.Module):
         sublayer_output = sublayer(self.norm(x))
         sublayer_output = self.dropout(sublayer_output)
         return x + sublayer_output
+
+
+class EncoderLayer(torch.nn.Module):
+
+    def __init__(self, size, self_attention, feed_forward, dropout):
+        super(EncoderLayer, self).__init__()
+        self.self_attention = self_attention
+        self.feed_forward = feed_forward
+        self.sublayer = clones(ResidualConnection(size, dropout), 2)
+        self.size = size
+
+    def forward(self, x, mask):
+        x = self.sublayer[0](x, lambda x: self.self_attention(x, x, x, mask))
+        return self.sublayer[1](x, self.feed_forward)
