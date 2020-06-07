@@ -1,5 +1,6 @@
 import torch
-from ..utils import clones, LayerNorm
+from ..utils import clones
+from ..blocks import LayerNorm
 
 
 class Decoder(torch.nn.Module):

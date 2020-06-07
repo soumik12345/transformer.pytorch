@@ -1,5 +1,6 @@
 import torch
-from ..utils import clones, ResidualConnection
+from ..utils import clones
+from ..blocks import ResidualConnection
 
 
 class EncoderLayer(torch.nn.Module):
