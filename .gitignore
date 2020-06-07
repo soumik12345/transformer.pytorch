@@ -2,3 +2,6 @@ env/
 .idea/
 test.py
 src/__pycache__/
+src/attention/__pycache__/
+src/decoder/__pycache__/
+src/encoder/__pycache__/
