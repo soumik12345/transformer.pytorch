@@ -27,3 +27,19 @@ class ResidualConnection(torch.nn.Module):
         sublayer_output = sublayer(self.norm(x))
         sublayer_output = self.dropout(sublayer_output)
         return x + sublayer_output
+
+
+class PositionWiseFeedForward(torch.nn.Module):
+
+    def __init__(self, d_model, d_ff, dropout=0.1):
+        super(PositionWiseFeedForward, self).__init__()
+        self.w_1 = torch.nn.Linear(d_model, d_ff)
+        self.w_2 = torch.nn.Linear(d_ff, d_model)
+        self.dropout = torch.nn.Dropout(dropout)
+
+    def forward(self, x):
+        x = self.w_1(x)
+        x = torch.nn.functional.relu(x)
+        x = self.dropout(x)
+        x = self.w_2(x)
+        return x
