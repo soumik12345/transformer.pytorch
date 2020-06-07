@@ -1,3 +1,4 @@
+import math
 import torch
 
 
@@ -43,3 +44,14 @@ class PositionWiseFeedForward(torch.nn.Module):
         x = self.dropout(x)
         x = self.w_2(x)
         return x
+
+
+class Embeddings(torch.nn.Module):
+
+    def __init__(self, d_model, vocab):
+        super(Embeddings, self).__init__()
+        self.lut = torch.nn.Embedding(vocab, d_model)
+        self.d_model = d_model
+
+    def forward(self, x):
+        return self.lut(x) * math.sqrt(self.d_model)
