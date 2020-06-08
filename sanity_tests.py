@@ -13,6 +13,7 @@ def test_subsequent_mask(log_on_wandb=False):
     plt.title('Test for Subsequent Mask')
     if log_on_wandb:
         wandb.log({'Test for Subsequent Mask': plt})
+        plt.close()
     else:
         plt.show()
 
@@ -29,7 +30,8 @@ def test_positional_encoding(log_on_wandb=False):
     plt.legend(["dim %d" % p for p in [4, 5, 6, 7]])
     plt.title('Test for Positional Encoding')
     if log_on_wandb:
-        wandb.log({'Test for Positional Encoding': plt})
+        wandb.log({'Test for Positional Encoding': wandb.Image(plt)})
+        plt.close()
     else:
         plt.show()
 
@@ -47,7 +49,8 @@ def test_noam_lr_policy(log_on_wandb=False):
     plt.legend(["512:4000", "512:8000", "256:4000"])
     plt.title('Test for Noam Learning Rate Policy')
     if log_on_wandb:
-        wandb.log({'Test for Noam Learning Rate Policy': plt})
+        wandb.log({'Test for Noam Learning Rate Policy': wandb.Image(plt)})
+        plt.close()
     else:
         plt.show()
 
@@ -71,6 +74,7 @@ def test_label_smoothing_target_distribution(log_on_wandb=False):
     plt.title('Test for Label Smoothing (Target Distribution)')
     if log_on_wandb:
         wandb.log({'Test for Label Smoothing (Target Distribution)': plt})
+        plt.close()
     else:
         plt.show()
 
@@ -88,7 +92,8 @@ def test_label_smoothing_regularization(log_on_wandb=False):
     plt.plot(np.arange(1, 100), [loss(x) for x in range(1, 100)])
     plt.title('Test for Label Smoothing (Regularization)')
     if log_on_wandb:
-        wandb.log({'Test for Label Smoothing (Regularization)': plt})
+        wandb.log({'Test for Label Smoothing (Regularization)': wandb.Image(plt)})
+        plt.close()
     else:
         plt.show()
 
