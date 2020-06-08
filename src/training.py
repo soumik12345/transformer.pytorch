@@ -1,5 +1,6 @@
 import torch
 import wandb
+import torchtext
 from tqdm import tqdm
 from time import time
 from .utils import subsequent_mask
@@ -129,3 +130,24 @@ class LabelSmoothing(torch.nn.Module):
         return self.criterion(
             x, torch.autograd.Variable(true_dist, requires_grad=False)
         )
+
+
+class DataIterator(torchtext.data.Iterator):
+
+    def create_batches(self):
+        if self.train:
+            def pool(d, random_shuffler):
+                for p in torchtext.data.batch(d, self.batch_size * 100):
+                    p_batch = torchtext.data.batch(
+                        sorted(p, key=self.sort_key),
+                        self.batch_size, self.batch_size_fn
+                    )
+                    for b in random_shuffler(list(p_batch)):
+                        yield b
+            self.batches = pool(self.data(), self.random_shuffler)
+        else:
+            self.batches = []
+            for b in torchtext.data.batch(
+                    self.data(), self.batch_size,
+                    self.batch_size_fn):
+                self.batches.append(sorted(b, key=self.sort_key))
