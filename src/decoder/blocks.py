@@ -15,6 +15,6 @@ class DecoderLayer(torch.nn.Module):
 
     def forward(self, x, memory, source_mask, target_mask):
         m = memory
-        x = self.sublayer[0](x, lambda x: self.self_attn(x, x, x, target_mask))
-        x = self.sublayer[1](x, lambda x: self.src_attn(x, m, m, source_mask))
+        x = self.sublayer[0](x, lambda x: self.self_attention(x, x, x, target_mask))
+        x = self.sublayer[1](x, lambda x: self.source_attention(x, m, m, source_mask))
         return self.sublayer[2](x, self.feed_forward)
