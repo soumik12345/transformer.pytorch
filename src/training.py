@@ -1,4 +1,6 @@
 import torch
+import wandb
+from tqdm import tqdm
 from time import time
 from .utils import subsequent_mask
 
@@ -26,12 +28,13 @@ class Batch:
         return target_mask
 
 
-def train_step(data_iter, model, loss_function):
+def train_step(data_iter, model, loss_function, log_on_wandb):
     start = time()
     total_tokens = 0
     total_loss = 0
     tokens = 0
-    for i, batch in enumerate(data_iter):
+    iterable = tqdm(enumerate(data_iter)) if log_on_wandb else enumerate(data_iter)
+    for i, batch in iterable:
         out = model.forward(
             batch.source, batch.target,
             batch.source_mask, batch.target_mask
@@ -43,7 +46,9 @@ def train_step(data_iter, model, loss_function):
         total_loss += loss
         total_tokens += batch.n_tokens
         tokens += batch.n_tokens
-        if i % 50 == 1:
+        if log_on_wandb:
+            wandb.log({"Loss": loss / batch.n_tokens})
+        elif i % 50 == 1:
             elapsed = time() - start
             print(
                 "Epoch Step: %d Loss: %f Tokens per Sec: %f" %
