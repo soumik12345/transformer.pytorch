@@ -5,3 +5,4 @@ src/attention/__pycache__/
 src/decoder/__pycache__/
 src/encoder/__pycache__/
 .ipynb_checkpoints/
+secret.py
