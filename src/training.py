@@ -47,7 +47,7 @@ def train_step(data_iter, model, loss_function):
             elapsed = time() - start
             print(
                 "Epoch Step: %d Loss: %f Tokens per Sec: %f" %
-                (i, loss / batch.ntokens, tokens / elapsed))
+                (i, loss / batch.n_tokens, tokens / elapsed))
             start = time()
             tokens = 0
     return total_loss / total_tokens
