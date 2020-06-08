@@ -1,10 +1,12 @@
 import torch
 import spacy
+from tqdm import tqdm
 from src.model import Transformer
 from torchtext import data, datasets
+from src.loss import MultiGPULossCompute
 from src.training import (
-    LabelSmoothing, DataIterator,
-    batch_size_function, NoamOptimizer
+    LabelSmoothing, DataIterator, rebatch,
+    batch_size_function, NoamOptimizer, train_step
 )
 
 
@@ -41,7 +43,7 @@ class MachineTranslationTrainer:
             self.train.trg,
             min_freq=self.configs['min_freq']
         )
-        pad_index = self.target.vocab.stoi[self.configs['blank_word']]
+        self.pad_index = self.target.vocab.stoi[self.configs['blank_word']]
         self.model = Transformer(
             len(self.source.vocab),
             len(self.target.vocab), n=6
@@ -49,7 +51,7 @@ class MachineTranslationTrainer:
         self.model.cuda()
         self.criterion = LabelSmoothing(
             size=len(self.target.vocab),
-            padding_idx=pad_index,
+            padding_idx=self.pad_index,
             smoothing=self.configs['smoothing']
         )
         self.criterion.cuda()
@@ -85,3 +87,26 @@ class MachineTranslationTrainer:
 
     def tokenize_target(self, text):
         return [tok.text for tok in self.spacy_target.tokenizer(text)]
+
+    def train(self):
+        for epoch in tqdm(range(10)):
+            print('Epoch:', (epoch + 1))
+            self.model_parameters.train()
+            train_step(
+                (rebatch(self.pad_index, b) for b in self.train_iter),
+                self.model_parameters,
+                MultiGPULossCompute(
+                    self.model.generator, self.criterion,
+                    devices=self.configs['devices'], opt=self.optimizer
+                )
+            )
+            self.model_parameters.eval()
+            loss = train_step(
+                (rebatch(self.pad_index, b) for b in self.valid_iter),
+                self.model_parameters,
+                MultiGPULossCompute(
+                    self.model.generator, self.criterion,
+                    devices=self.configs['devices'], opt=None
+                )
+            )
+            print(loss)
