@@ -2,7 +2,10 @@ import torch
 import spacy
 from src.model import Transformer
 from torchtext import data, datasets
-from src.training import LabelSmoothing, DataIterator, batch_size_function
+from src.training import (
+    LabelSmoothing, DataIterator,
+    batch_size_function, NoamOptimizer
+)
 
 
 class MachineTranslationTrainer:
@@ -62,6 +65,19 @@ class MachineTranslationTrainer:
         )
         self.model_parameters = torch.nn.DataParallel(
             self.model, device_ids=self.configs['devices']
+        )
+        self.optimizer = NoamOptimizer(
+            self.model.source_embedding[0].d_model,
+            self.configs['factor'], self.configs['warmup'],
+            torch.optim.Adam(
+                self.model.parameters(),
+                lr=self.configs['lr'],
+                betas=(
+                    self.configs['beta_1'],
+                    self.configs['beta_2']
+                ),
+                eps=self.configs['epsilon']
+            )
         )
 
     def tokenize_source(self, text):
