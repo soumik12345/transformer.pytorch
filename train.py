@@ -1,5 +1,6 @@
 import torch
 import spacy
+import wandb
 from tqdm import tqdm
 from src.model import Transformer
 from torchtext import data, datasets
@@ -88,7 +89,7 @@ class MachineTranslationTrainer:
     def tokenize_target(self, text):
         return [tok.text for tok in self.spacy_target.tokenizer(text)]
 
-    def train(self):
+    def train(self, log_on_wandb=True):
         for epoch in tqdm(range(10)):
             print('Epoch:', (epoch + 1))
             self.model_parameters.train()
@@ -109,4 +110,7 @@ class MachineTranslationTrainer:
                     devices=self.configs['devices'], opt=None
                 )
             )
-            print(loss)
+            if log_on_wandb:
+                wandb.log({"Epoch Loss": loss})
+            else:
+                print(loss)
