@@ -60,8 +60,8 @@ class MultiGPULossCompute:
             l = torch.nn.parallel.gather(
                 loss, target_device=self.devices[0]
             )
-            l = l.sum()[0] / normalize
-            total += l.data[0]
+            l = l.sum() / normalize
+            total += l.data.item()
             if self.opt is not None:
                 l.backward()
                 for j, l in enumerate(loss):
