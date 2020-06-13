@@ -64,8 +64,8 @@ def batch_size_function(new, count, sofar):
     if count == 1:
         max_source_in_batch = 0
         max_target_in_batch = 0
-    max_source_in_batch = max(max_source_in_batch, len(new.source))
-    max_target_in_batch = max(max_target_in_batch, len(new.target) + 2)
+    max_source_in_batch = max(max_source_in_batch, len(new.src))
+    max_target_in_batch = max(max_target_in_batch, len(new.trg) + 2)
     source_elements = count * max_source_in_batch
     target_elements = count * max_target_in_batch
     return max(source_elements, target_elements)
