@@ -22,3 +22,27 @@ around each of the sub-layers, followed by layer normalization. We also modify t
 sub-layer in the decoder stack to prevent positions from attending to subsequent positions. This
 masking, combined with fact that the output embeddings are offset by one position, ensures that the
 predictions for position `i` can depend only on the known outputs at positions less than `i`.
+
+## Attention
+
+![](./assets/scaled_dot_product_attention.png)
+
+![](./assets/scaled_dot_product_attention_formula.gif)
+
+![](./assets/multi_head_attention.png)
+
+![](./assets/multihead_formula_1.gif)
+
+such that, ![](./assets/multihead_formula_2.gif)
+
+## Reference
+
+```
+@misc{
+    1706.03762,
+    Author = {Ashish Vaswani and Noam Shazeer and Niki Parmar and Jakob Uszkoreit and Llion Jones and Aidan N. Gomez and Lukasz Kaiser and Illia Polosukhin},
+    Title = {Attention Is All You Need},
+    Year = {2017},
+    Eprint = {arXiv:1706.03762},
+}
+```
